@@ -237,7 +237,7 @@ h1 {
   color: #333;
 }
 
-.event-details .error-message {
+.add-event-form .error-message {
   color: red;
   margin-bottom: 10px;
   text-align: center;
