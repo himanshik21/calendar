@@ -1,47 +1,67 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 
-const EventDetails = ({ events, editEvent, deleteEvent }) => {
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useError } from "../ErrorContext";
+
+const EventDetails = ({ events }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+  const { error, setError } = useError();
+
   const event = events.find((event) => event.id === parseInt(id));
 
   const [title, setTitle] = useState(event?.title || "");
   const [date, setDate] = useState(event?.date || "");
 
+  useEffect(() => {
+    if (!event) {
+      setError("Event not found");
+      navigate("/");
+    }
+  }, [event, navigate, setError]);
+
   const handleEdit = () => {
-    const updatedEvent = { ...event, title, date };
-    editEvent(event.id, updatedEvent);
+    if (!title || !date) {
+      setError("Title and date are required");
+      return;
+    }
+    setError("");
+    console.log("Updated Event:", { title, date });
     navigate("/");
   };
 
   const handleDelete = () => {
-    deleteEvent(event.id);
-    navigate("/");
+    if (window.confirm("Are you sure you want to delete this event?")) {
+      // Code to delete the event
+      console.log("Event deleted:", event);
+      navigate("/");
+    }
   };
-
-  if (!event) {
-    return <p>Event not found.</p>;
-  }
 
   return (
     <div className="event-details">
+      {error && <p className="error-message">{error}</p>}
       <h2>Edit Event</h2>
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="edit-input"
-        placeholder="Event Title"
-      />
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-        className="edit-input"
-      />
+      <label>
+        Event Title:
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="edit-input"
+          placeholder="Event Title"
+        />
+      </label>
+      <label>
+        Event Date:
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="edit-input"
+        />
+      </label>
       <div className="buttons">
         <button onClick={handleEdit} className="save-btn">
           Save Changes

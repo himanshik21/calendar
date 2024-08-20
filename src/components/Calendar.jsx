@@ -2,45 +2,33 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Calendar = ({ events }) => {
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [selectedCategory, setSelectedCategory] = useState("All");
-
+const Calendar = ({ events = [] }) => {
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()); // Current month
+  const [selectedCategory, setSelectedCategory] = useState("All"); // Default to all categories
   const navigate = useNavigate();
 
   const handleMonthChange = (direction) => {
-    setSelectedMonth((prev) => {
-      let newMonth = prev + direction;
-
-      if (newMonth < 0) {
-        newMonth = 11;
-        setSelectedYear((prevYear) => prevYear - 1);
-      } else if (newMonth > 11) {
-        newMonth = 0;
-        setSelectedYear((prevYear) => prevYear + 1);
-      }
-      return newMonth;
-    });
-  };
-
-  const handleEventClick = (id) => {
-    navigate(`/event/${id}`);
+    setSelectedMonth((prev) => (prev + direction + 12) % 12);
   };
 
   const filteredEvents = events.filter((event) => {
-    const eventDate = new Date(event.date);
-    const eventMonth = eventDate.getMonth();
-    const eventYear = eventDate.getFullYear();
+    const eventMonth = new Date(event.date).getMonth();
     return (
       (selectedCategory === "All" || event.category === selectedCategory) &&
-      eventMonth === selectedMonth &&
-      eventYear === selectedYear
+      eventMonth === selectedMonth
     );
   });
 
+  const handleEventClick = (eventId) => {
+    navigate(`/event/${eventId}`);
+  };
+
   const generateCalendar = () => {
-    const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+    const daysInMonth = new Date(
+      new Date().getFullYear(),
+      selectedMonth + 1,
+      0
+    ).getDate();
     const days = [];
 
     for (let i = 1; i <= daysInMonth; i++) {
@@ -51,11 +39,7 @@ const Calendar = ({ events }) => {
             {filteredEvents
               .filter((event) => new Date(event.date).getDate() === i)
               .map((event) => (
-                <li
-                  key={event.id}
-                  className="event-item"
-                  onClick={() => handleEventClick(event.id)}
-                >
+                <li key={event.id} onClick={() => handleEventClick(event.id)}>
                   {event.title}
                 </li>
               ))}
@@ -70,24 +54,22 @@ const Calendar = ({ events }) => {
   return (
     <div className="calendar-container">
       <div className="calendar-controls">
-        <div className="monthShow">
-          <button onClick={() => handleMonthChange(-1)} className="nav-btn">
-            Previous
-          </button>
-          <span className="month-year">
-            {new Date(selectedYear, selectedMonth).toLocaleString("default", {
-              month: "long",
-            })}{" "}
-            {selectedYear}
-          </span>
-          <button onClick={() => handleMonthChange(1)} className="nav-btn">
-            Next
-          </button>
-        </div>
+        <button className="nav-btn" onClick={() => handleMonthChange(-1)}>
+          Previous
+        </button>
+        <span>
+          {new Date(new Date().getFullYear(), selectedMonth).toLocaleString(
+            "default",
+            { month: "long" }
+          )}{" "}
+          {new Date(new Date().getFullYear(), selectedMonth).getFullYear()}
+        </span>
+        <button className="nav-btn" onClick={() => handleMonthChange(1)}>
+          Next
+        </button>
         <select
           onChange={(e) => setSelectedCategory(e.target.value)}
           value={selectedCategory}
-          className="category-select"
         >
           <option value="All">All</option>
           <option value="Work">Work</option>

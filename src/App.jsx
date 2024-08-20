@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Calendar from "./components/Calendar";
-import AddEvent from "./components/AddEvent";
-import EventDetails from "./components/EventDetails";
 import "./App.css";
+import AddEvent from "./components/AddEvent";
+import Calendar from "./components/Calendar";
+import EventDetails from "./components/EventDetails";
+import { ErrorProvider } from "./ErrorContext";
 
 function App() {
   const [events, setEvents] = useState(() => {
@@ -28,30 +29,32 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
-      <h1>Calendar Application</h1>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <AddEvent addEvent={addEvent} />
-              <Calendar events={events} />
-            </>
-          }
-        />
-        <Route
-          path="/event/:id"
-          element={
-            <EventDetails
-              events={events}
-              editEvent={editEvent}
-              deleteEvent={deleteEvent}
-            />
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <ErrorProvider>
+      <BrowserRouter>
+        <h1>Calendar Application</h1>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <AddEvent addEvent={addEvent} />
+                <Calendar events={events} />
+              </>
+            }
+          />
+          <Route
+            path="/event/:id"
+            element={
+              <EventDetails
+                events={events}
+                editEvent={editEvent}
+                deleteEvent={deleteEvent}
+              />
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </ErrorProvider>
   );
 }
 
