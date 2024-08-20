@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { useError } from "../ErrorContext";
 
-const AddEvent = () => {
+const AddEvent = ({ addEvent }) => {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [category, setCategory] = useState("Work");
@@ -13,7 +14,13 @@ const AddEvent = () => {
       setError("Title and date are required");
       return;
     }
-    setError(""); 
+    setError("");
+    addEvent({
+      id: Date.now(), // Simple unique ID
+      title,
+      date,
+      category,
+    });
     setTitle("");
     setDate("");
     setCategory("Work");

@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Calendar = ({ events = [] }) => {
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()); 
-  const [selectedCategory, setSelectedCategory] = useState("All"); 
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const navigate = useNavigate();
 
   const handleMonthChange = (direction) => {
