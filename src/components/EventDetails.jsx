@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useError } from "../ErrorContext";
@@ -33,7 +32,6 @@ const EventDetails = ({ events }) => {
 
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this event?")) {
-      // Code to delete the event
       console.log("Event deleted:", event);
       navigate("/");
     }

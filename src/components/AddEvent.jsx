@@ -13,8 +13,7 @@ const AddEvent = () => {
       setError("Title and date are required");
       return;
     }
-    setError(""); // Clear previous errors
-    // Add event logic here
+    setError(""); 
     setTitle("");
     setDate("");
     setCategory("Work");
